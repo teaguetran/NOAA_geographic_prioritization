@@ -1,0 +1,191 @@
+---
+title: "NOAA Funding in the Willamette Basin"
+author: "Teague Tran"
+date: "8/3/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(janitor)
+library(readxl)
+library(here)
+library(kableExtra)
+library(lubridate)
+library(tsibble)
+library(patchwork)
+
+noaa_funding <- read_xls(here("NOAA_Funding.xls"))
+```
+```{r}
+#select important columns to work with
+noaa_selected <- noaa_funding %>% 
+  select("Name","Descriptio", "Constructi", "Techniques","Habitats","Acres_Rest","Acres_Prot", "Cost", "NOAA_Contr", "Percent_fu","name_12") 
+#make date columns into actual dates
+date_finished <- noaa_selected %>% 
+  mutate(date_finished = lubridate::ymd(Constructi)) %>% 
+  #Seperate projects on high priority areas vs low priority areas
+  mutate(high_priority_areas = 
+           case_when(name_12 %in% c("Mckenzie", "Middle Fork Willamette", "Upper Calapooia River", "South Santiam", "North Santiam","Molalla-Pudding", "Clackamas") ~ "High Priority", 
+                     name_12 %in% c("Coast Fork Willamette", "Upper Willamette", "Middle Willamette", "Yamhill", "Tualatin", "Lower Willamette") ~ "Not Prioritized")) %>% 
+  mutate(year_finished = year(date_finished))
+
+
+#select for projects after 2007 (designation of critical)
+projects_after2007 <- date_finished %>% 
+  filter(year_finished >= 2007)
+```
+
+```{r}
+#Show how much money was put into the watershed
+#sum
+watershed_money_sum <- noaa_selected %>% 
+  group_by(name_12) %>% 
+  summarise(round(sum(NOAA_Contr),2)) 
+
+#mean
+watershed_money_mean <- noaa_selected %>% 
+  group_by(name_12) %>% 
+  summarise(round(mean(NOAA_Contr),2))
+
+#median
+watershed_money_median <- noaa_selected %>% 
+  group_by(name_12) %>% 
+  summarise(round(median(NOAA_Contr),2))
+
+#Change the column names to work better
+colnames(watershed_money_sum) <- c("watershed_name", "money_funded_sum")
+colnames(watershed_money_mean) <- c("watershed_name", "money_funded_mean")
+colnames(watershed_money_median) <- c("watershed_name", "money_funded_median")
+
+```
+```{r}
+#Graphing mean of money spent on a Histogram
+#divide by 1000 to make numbers easier for graph
+watershed_money_sum <- watershed_money_sum %>% 
+  mutate(divided_1000 = round(money_funded_sum/1000,2))
+
+histo_sum <- ggplot(data = watershed_money_sum) + 
+  geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
+  )+ 
+  coord_flip() +
+  labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Sum Funded by NOAA for Restoration Projects by Subwatershed")
+
+histo_sum
+```
+
+```{r}
+#Graphing mean of money spent on a Histogram
+#divide by 1000 to make numbers easier for graph
+watershed_money_mean <- watershed_money_mean %>% 
+  mutate(divided_1000 = round(money_funded_mean/1000,2))
+
+histo_mean <- ggplot(data = watershed_money_mean) + 
+  geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
+  )+ 
+  coord_flip() +
+  labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Mean Funded by NOAA for Restoration Projects by Subwatershed")
+
+histo_mean
+```
+
+```{r}
+#Graphing median of money spent on a Histogram
+#divide by 1000 to make numbers easier for graph
+watershed_money_median <- watershed_money_median %>% 
+  mutate(divided_1000 = round(money_funded_median/1000))
+
+histo_median <- ggplot(data = watershed_money_median) + 
+  geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
+  )+ 
+  coord_flip() +
+  labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Median Funded by NOAA for Restoration Projects by Subwatershed")
+
+histo_median
+```
+
+```{r}
+#time to do the same for projects after 2007 
+#maybe priorities have changed since the establishment of the Chinook and Steelhead Recovery Plan
+#Show how much money was put into the watershed
+#sum
+after2007_sum<- projects_after2007 %>% 
+  group_by(name_12) %>% 
+  summarise(round(sum(NOAA_Contr),2)) 
+
+#mean
+after2007_mean <- projects_after2007 %>% 
+  group_by(name_12) %>% 
+  summarise(round(mean(NOAA_Contr),2))
+
+#median
+after2007_median <- projects_after2007 %>% 
+  group_by(name_12) %>% 
+  summarise(round(median(NOAA_Contr),2))
+
+#Change the column names to work better
+colnames(after2007_sum) <- c("watershed_name", "money_funded_sum")
+colnames(after2007_mean) <- c("watershed_name", "money_funded_mean")
+colnames(after2007_median) <- c("watershed_name", "money_funded_median")
+```
+```{r}
+#Graphing mean of money spent on a Histogram (after 2007)
+#divide by 1000 to make numbers easier for graph
+after2007_sum <- after2007_sum %>% 
+  mutate(divided_1000 = round(money_funded_sum/1000,2))
+
+histo_after2007_sum <- ggplot(data = after2007_sum) + 
+  geom_col(aes(reorder(watershed_name, divided_1000), divided_1000), fill = "blue", color = "black"
+  )+ 
+  coord_flip() +
+  labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Sum Funded by NOAA for Restoration Projects by Subwatershed", subtitle = "(After 2007)")
+
+histo_after2007_sum
+```
+```{r}
+#Graphing mean of money spent on a Histogram (after 2007)
+#divide by 1000 to make numbers easier for graph
+after2007_mean <- after2007_mean %>% 
+  mutate(divided_1000 = round(money_funded_mean/1000,2))
+
+histo_after2007_mean <- ggplot(data = after2007_mean) + 
+  geom_col(aes(reorder(watershed_name, divided_1000), divided_1000), fill = "blue", color = "black"
+  )+ 
+  coord_flip() +
+  labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Mean Funded by NOAA for Restoration Projects by Subwatershed")
+
+histo_after2007_mean
+```
+
+```{r}
+#Graphing mean of money spent on a Histogram (after 2007)
+#divide by 1000 to make numbers easier for graph
+after2007_median <- after2007_median %>% 
+  mutate(divided_1000 = round(money_funded_median/1000,2))
+
+histo_after2007_median <- ggplot(data = after2007_median) + 
+  geom_col(aes(reorder(watershed_name, divided_1000), divided_1000), color = "black", fill = "blue"
+  )+ 
+  coord_flip() +
+  labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Median Funded by NOAA for Restoration Projects by Subwatershed")
+
+histo_after2007_median
+```
+```{r}
+#combine graphs for whole dataset
+
+combined_whole <- (histo_median + histo_mean) / histo_sum
+combined_whole
+```
+
+```{r}
+#combine the after2007 graphs
+
+combined_after2007 <- (histo_after2007_median + histo_after2007_mean)/histo_after2007_sum
+
+combined_after2007
+```
+

@@ -1,0 +1,500 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={NOAA Funding in the Willamette Basin},
+  pdfauthor={Teague Tran},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage{colortbl}
+\usepackage{pdflscape}
+\usepackage{tabu}
+\usepackage{threeparttable}
+\usepackage{threeparttablex}
+\usepackage[normalem]{ulem}
+\usepackage{makecell}
+\usepackage{xcolor}
+
+\title{NOAA Funding in the Willamette Basin}
+\author{Teague Tran}
+\date{8/3/2021}
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## -- Attaching packages --------------------------------------- tidyverse 1.3.0 --
+\end{verbatim}
+
+\begin{verbatim}
+## v ggplot2 3.3.3     v purrr   0.3.4
+## v tibble  3.0.6     v dplyr   1.0.4
+## v tidyr   1.1.2     v stringr 1.4.0
+## v readr   1.4.0     v forcats 0.5.1
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'ggplot2' was built under R version 4.0.3
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'tibble' was built under R version 4.0.3
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'readr' was built under R version 4.0.3
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'dplyr' was built under R version 4.0.3
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'forcats' was built under R version 4.0.3
+\end{verbatim}
+
+\begin{verbatim}
+## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(ggplot2)}
+\KeywordTok{library}\NormalTok{(janitor)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'janitor' was built under R version 4.0.3
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'janitor'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     chisq.test, fisher.test
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(readxl)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'readxl' was built under R version 4.0.3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(here)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'here' was built under R version 4.0.3
+\end{verbatim}
+
+\begin{verbatim}
+## here() starts at C:/Users/ichos/OneDrive/Desktop/ESM244/ESM204/NOAA_geographic_prioritization
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(kableExtra)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'kableExtra'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:dplyr':
+## 
+##     group_rows
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(lubridate)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'lubridate' was built under R version 4.0.3
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'lubridate'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     date, intersect, setdiff, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(tsibble)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'tsibble'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:lubridate':
+## 
+##     interval
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(patchwork)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'patchwork' was built under R version 4.0.3
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{noaa_funding <-}\StringTok{ }\KeywordTok{read_xls}\NormalTok{(}\KeywordTok{here}\NormalTok{(}\StringTok{"NOAA_Funding.xls"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#select important columns to work with}
+\NormalTok{noaa_selected <-}\StringTok{ }\NormalTok{noaa_funding }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(}\StringTok{"Name"}\NormalTok{,}\StringTok{"Descriptio"}\NormalTok{, }\StringTok{"Constructi"}\NormalTok{, }\StringTok{"Techniques"}\NormalTok{,}\StringTok{"Habitats"}\NormalTok{,}\StringTok{"Acres_Rest"}\NormalTok{,}\StringTok{"Acres_Prot"}\NormalTok{, }\StringTok{"Cost"}\NormalTok{, }\StringTok{"NOAA_Contr"}\NormalTok{, }\StringTok{"Percent_fu"}\NormalTok{,}\StringTok{"name_12"}\NormalTok{) }
+\CommentTok{#make date columns into actual dates}
+\NormalTok{date_finished <-}\StringTok{ }\NormalTok{noaa_selected }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{date_finished =}\NormalTok{ lubridate}\OperatorTok{::}\KeywordTok{ymd}\NormalTok{(Constructi)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\CommentTok{#Seperate projects on high priority areas vs low priority areas}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{high_priority_areas =} 
+           \KeywordTok{case_when}\NormalTok{(name_}\DecValTok{12} \OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Mckenzie"}\NormalTok{, }\StringTok{"Middle Fork Willamette"}\NormalTok{, }\StringTok{"Upper Calapooia River"}\NormalTok{, }\StringTok{"South Santiam"}\NormalTok{, }\StringTok{"North Santiam"}\NormalTok{,}\StringTok{"Molalla-Pudding"}\NormalTok{, }\StringTok{"Clackamas"}\NormalTok{) }\OperatorTok{~}\StringTok{ "High Priority"}\NormalTok{, }
+\NormalTok{                     name_}\DecValTok{12} \OperatorTok{%in%}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"Coast Fork Willamette"}\NormalTok{, }\StringTok{"Upper Willamette"}\NormalTok{, }\StringTok{"Middle Willamette"}\NormalTok{, }\StringTok{"Yamhill"}\NormalTok{, }\StringTok{"Tualatin"}\NormalTok{, }\StringTok{"Lower Willamette"}\NormalTok{) }\OperatorTok{~}\StringTok{ "Not Prioritized"}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{year_finished =} \KeywordTok{year}\NormalTok{(date_finished))}
+
+
+\CommentTok{#select for projects after 2007 (designation of critical)}
+\NormalTok{projects_after2007 <-}\StringTok{ }\NormalTok{date_finished }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{filter}\NormalTok{(year_finished }\OperatorTok{>=}\StringTok{ }\DecValTok{2007}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Show how much money was put into the watershed}
+\CommentTok{#sum}
+\NormalTok{watershed_money_sum <-}\StringTok{ }\NormalTok{noaa_selected }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(name_}\DecValTok{12}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{round}\NormalTok{(}\KeywordTok{sum}\NormalTok{(NOAA_Contr),}\DecValTok{2}\NormalTok{)) }
+
+\CommentTok{#mean}
+\NormalTok{watershed_money_mean <-}\StringTok{ }\NormalTok{noaa_selected }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(name_}\DecValTok{12}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{round}\NormalTok{(}\KeywordTok{mean}\NormalTok{(NOAA_Contr),}\DecValTok{2}\NormalTok{))}
+
+\CommentTok{#median}
+\NormalTok{watershed_money_median <-}\StringTok{ }\NormalTok{noaa_selected }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(name_}\DecValTok{12}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{round}\NormalTok{(}\KeywordTok{median}\NormalTok{(NOAA_Contr),}\DecValTok{2}\NormalTok{))}
+
+\CommentTok{#Change the column names to work better}
+\KeywordTok{colnames}\NormalTok{(watershed_money_sum) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"watershed_name"}\NormalTok{, }\StringTok{"money_funded_sum"}\NormalTok{)}
+\KeywordTok{colnames}\NormalTok{(watershed_money_mean) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"watershed_name"}\NormalTok{, }\StringTok{"money_funded_mean"}\NormalTok{)}
+\KeywordTok{colnames}\NormalTok{(watershed_money_median) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"watershed_name"}\NormalTok{, }\StringTok{"money_funded_median"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Graphing mean of money spent on a Histogram}
+\CommentTok{#divide by 1000 to make numbers easier for graph}
+\NormalTok{watershed_money_sum <-}\StringTok{ }\NormalTok{watershed_money_sum }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{divided_1000 =} \KeywordTok{round}\NormalTok{(money_funded_sum}\OperatorTok{/}\DecValTok{1000}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+
+\NormalTok{histo_sum <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ watershed_money_sum) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\KeywordTok{reorder}\NormalTok{(watershed_name, divided_}\DecValTok{1000}\NormalTok{), divided_}\DecValTok{1000}\NormalTok{)}
+\NormalTok{  )}\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{"Subwatershed Name"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"Funding for Restoration ($1000)"}\NormalTok{, }\DataTypeTok{title =} \StringTok{"Sum Funded by NOAA for Restoration Projects by Subwatershed"}\NormalTok{)}
+
+\NormalTok{histo_sum}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{NOAA_Funding_files/figure-latex/unnamed-chunk-4-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Graphing mean of money spent on a Histogram}
+\CommentTok{#divide by 1000 to make numbers easier for graph}
+\NormalTok{watershed_money_mean <-}\StringTok{ }\NormalTok{watershed_money_mean }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{divided_1000 =} \KeywordTok{round}\NormalTok{(money_funded_mean}\OperatorTok{/}\DecValTok{1000}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+
+\NormalTok{histo_mean <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ watershed_money_mean) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\KeywordTok{reorder}\NormalTok{(watershed_name, divided_}\DecValTok{1000}\NormalTok{), divided_}\DecValTok{1000}\NormalTok{)}
+\NormalTok{  )}\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{"Subwatershed Name"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"Funding for Restoration ($1000)"}\NormalTok{, }\DataTypeTok{title =} \StringTok{"Mean Funded by NOAA for Restoration Projects by Subwatershed"}\NormalTok{)}
+
+\NormalTok{histo_mean}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{NOAA_Funding_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Graphing median of money spent on a Histogram}
+\CommentTok{#divide by 1000 to make numbers easier for graph}
+\NormalTok{watershed_money_median <-}\StringTok{ }\NormalTok{watershed_money_median }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{divided_1000 =} \KeywordTok{round}\NormalTok{(money_funded_median}\OperatorTok{/}\DecValTok{1000}\NormalTok{))}
+
+\NormalTok{histo_median <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ watershed_money_median) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\KeywordTok{reorder}\NormalTok{(watershed_name, divided_}\DecValTok{1000}\NormalTok{), divided_}\DecValTok{1000}\NormalTok{)}
+\NormalTok{  )}\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{"Subwatershed Name"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"Funding for Restoration ($1000)"}\NormalTok{, }\DataTypeTok{title =} \StringTok{"Median Funded by NOAA for Restoration Projects by Subwatershed"}\NormalTok{)}
+
+\NormalTok{histo_median}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{NOAA_Funding_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#time to do the same for projects after 2007 }
+\CommentTok{#maybe priorities have changed since the establishment of the Chinook and Steelhead Recovery Plan}
+\CommentTok{#Show how much money was put into the watershed}
+\CommentTok{#sum}
+\NormalTok{after2007_sum<-}\StringTok{ }\NormalTok{projects_after2007 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(name_}\DecValTok{12}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{round}\NormalTok{(}\KeywordTok{sum}\NormalTok{(NOAA_Contr),}\DecValTok{2}\NormalTok{)) }
+
+\CommentTok{#mean}
+\NormalTok{after2007_mean <-}\StringTok{ }\NormalTok{projects_after2007 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(name_}\DecValTok{12}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{round}\NormalTok{(}\KeywordTok{mean}\NormalTok{(NOAA_Contr),}\DecValTok{2}\NormalTok{))}
+
+\CommentTok{#median}
+\NormalTok{after2007_median <-}\StringTok{ }\NormalTok{projects_after2007 }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(name_}\DecValTok{12}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{summarise}\NormalTok{(}\KeywordTok{round}\NormalTok{(}\KeywordTok{median}\NormalTok{(NOAA_Contr),}\DecValTok{2}\NormalTok{))}
+
+\CommentTok{#Change the column names to work better}
+\KeywordTok{colnames}\NormalTok{(after2007_sum) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"watershed_name"}\NormalTok{, }\StringTok{"money_funded_sum"}\NormalTok{)}
+\KeywordTok{colnames}\NormalTok{(after2007_mean) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"watershed_name"}\NormalTok{, }\StringTok{"money_funded_mean"}\NormalTok{)}
+\KeywordTok{colnames}\NormalTok{(after2007_median) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"watershed_name"}\NormalTok{, }\StringTok{"money_funded_median"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Graphing mean of money spent on a Histogram (after 2007)}
+\CommentTok{#divide by 1000 to make numbers easier for graph}
+\NormalTok{after2007_sum <-}\StringTok{ }\NormalTok{after2007_sum }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{divided_1000 =} \KeywordTok{round}\NormalTok{(money_funded_sum}\OperatorTok{/}\DecValTok{1000}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+
+\NormalTok{histo_after2007_sum <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ after2007_sum) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\KeywordTok{reorder}\NormalTok{(watershed_name, divided_}\DecValTok{1000}\NormalTok{), divided_}\DecValTok{1000}\NormalTok{), }\DataTypeTok{fill =} \StringTok{"blue"}\NormalTok{, }\DataTypeTok{color =} \StringTok{"black"}
+\NormalTok{  )}\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{"Subwatershed Name"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"Funding for Restoration ($1000)"}\NormalTok{, }\DataTypeTok{title =} \StringTok{"Sum Funded by NOAA for Restoration Projects by Subwatershed"}\NormalTok{, }\DataTypeTok{subtitle =} \StringTok{"(After 2007)"}\NormalTok{)}
+
+\NormalTok{histo_after2007_sum}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{NOAA_Funding_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Graphing mean of money spent on a Histogram (after 2007)}
+\CommentTok{#divide by 1000 to make numbers easier for graph}
+\NormalTok{after2007_mean <-}\StringTok{ }\NormalTok{after2007_mean }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{divided_1000 =} \KeywordTok{round}\NormalTok{(money_funded_mean}\OperatorTok{/}\DecValTok{1000}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+
+\NormalTok{histo_after2007_mean <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ after2007_mean) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\KeywordTok{reorder}\NormalTok{(watershed_name, divided_}\DecValTok{1000}\NormalTok{), divided_}\DecValTok{1000}\NormalTok{), }\DataTypeTok{fill =} \StringTok{"blue"}\NormalTok{, }\DataTypeTok{color =} \StringTok{"black"}
+\NormalTok{  )}\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{"Subwatershed Name"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"Funding for Restoration ($1000)"}\NormalTok{, }\DataTypeTok{title =} \StringTok{"Mean Funded by NOAA for Restoration Projects by Subwatershed"}\NormalTok{)}
+
+\NormalTok{histo_after2007_mean}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{NOAA_Funding_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Graphing mean of money spent on a Histogram (after 2007)}
+\CommentTok{#divide by 1000 to make numbers easier for graph}
+\NormalTok{after2007_median <-}\StringTok{ }\NormalTok{after2007_median }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{divided_1000 =} \KeywordTok{round}\NormalTok{(money_funded_median}\OperatorTok{/}\DecValTok{1000}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+
+\NormalTok{histo_after2007_median <-}\StringTok{ }\KeywordTok{ggplot}\NormalTok{(}\DataTypeTok{data =}\NormalTok{ after2007_median) }\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{geom_col}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\KeywordTok{reorder}\NormalTok{(watershed_name, divided_}\DecValTok{1000}\NormalTok{), divided_}\DecValTok{1000}\NormalTok{), }\DataTypeTok{color =} \StringTok{"black"}\NormalTok{, }\DataTypeTok{fill =} \StringTok{"blue"}
+\NormalTok{  )}\OperatorTok{+}\StringTok{ }
+\StringTok{  }\KeywordTok{coord_flip}\NormalTok{() }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{x =} \StringTok{"Subwatershed Name"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"Funding for Restoration ($1000)"}\NormalTok{, }\DataTypeTok{title =} \StringTok{"Median Funded by NOAA for Restoration Projects by Subwatershed"}\NormalTok{)}
+
+\NormalTok{histo_after2007_median}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{NOAA_Funding_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#combine graphs for whole dataset}
+
+\NormalTok{combined_whole <-}\StringTok{ }\NormalTok{(histo_median }\OperatorTok{+}\StringTok{ }\NormalTok{histo_mean) }\OperatorTok{/}\StringTok{ }\NormalTok{histo_sum}
+\NormalTok{combined_whole}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{NOAA_Funding_files/figure-latex/unnamed-chunk-11-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#combine the after2007 graphs}
+
+\NormalTok{combined_after2007 <-}\StringTok{ }\NormalTok{(histo_after2007_median }\OperatorTok{+}\StringTok{ }\NormalTok{histo_after2007_mean)}\OperatorTok{/}\NormalTok{histo_after2007_sum}
+
+\NormalTok{combined_after2007}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{NOAA_Funding_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+\end{document}

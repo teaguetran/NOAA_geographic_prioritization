@@ -1,0 +1,220 @@
+---
+title: "Watershed_Funding"
+author: "Teague Tran"
+date: "8/5/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(ggplot2)
+library(janitor)
+library(readxl)
+library(here)
+library(kableExtra)
+library(lubridate)
+library(tsibble)
+library(patchwork)
+
+watershed_funding <- read_xls(here("Projects_by_subwatersheds.xls")) %>% 
+  clean_names()
+
+```
+
+```{r}
+#putting all of the types of funding into data frame to perform summary statistics
+rows_funding <- watershed_funding %>% 
+  select(pcsrf_funds, state_funds, other_funds, in_kind_volunteer_funds, in_kind_donated_labor_funds, in_kind_other_funds)
+#get dates for the start of funding
+watershed_funding_withdates <-  watershed_funding %>% 
+  mutate(start_date = lubridate::ymd(start)) %>% 
+  mutate(year_start = year(start_date)) %>% 
+  mutate(total_money = rowSums(rows_funding))
+```
+```{r}
+#sum of total funding by subwatershed
+watershed_money_sum <- watershed_funding_withdates %>% 
+  group_by(name_2) %>% 
+  summarise(round(sum(total_money),2)) 
+#mean of total
+watershed_money_mean <- watershed_funding_withdates %>%
+  filter(total_money > 0, is.na = TRUE ) %>% 
+  group_by(name_2) %>% 
+  summarise(round(mean(total_money),2))
+#median of total
+watershed_money_median <- watershed_funding_withdates %>% 
+  filter(total_money > 0, is.na = TRUE ) %>% 
+  group_by(name_2) %>% 
+  summarise(round(mean(total_money),2))
+
+#sum of NOAA (PCSRF)funds
+pcsrf_funds_sum <- watershed_funding_withdates %>% 
+  group_by(name_2) %>% 
+  summarise(round(sum(pcsrf_funds),2)) 
+#mean of NOAA
+pcsrf_funds_mean  <- watershed_funding_withdates %>% 
+  filter(pcsrf_funds > 0, is.na = TRUE ) %>% 
+  group_by(name_2) %>% 
+  summarise(round(mean(pcsrf_funds),2))
+#median of NOAA
+pcsrf_funds_median  <- watershed_funding_withdates %>% 
+  filter(pcsrf_funds > 0, is.na = TRUE ) %>% 
+  group_by(name_2) %>% 
+  summarise(round(median(pcsrf_funds),2))
+
+#sum of state funds
+state_funds_sum <- watershed_funding_withdates %>% 
+  group_by(name_2) %>% 
+  summarise(round(sum(state_funds),2))
+
+#mean of state funds
+state_funds_mean <- watershed_funding_withdates %>% 
+  filter(state_funds > 0, is.na = TRUE ) %>% 
+  group_by(name_2) %>% 
+  summarise(round(mean(state_funds),2))
+
+#median of state funds
+state_funds_median <- watershed_funding_withdates %>% 
+  filter(state_funds > 0, is.na = TRUE ) %>% 
+  group_by(name_2) %>% 
+  summarise(round(median(state_funds),2))
+#sum of other funds (all in-kind funds = 0)
+others_funds_sum <- watershed_funding_withdates %>% 
+  group_by(name_2) %>% 
+  summarise(round(sum(other_funds),2))
+
+#make column names easier
+colnames(watershed_money_sum) <- c("watershed_name", "money_funded_sum")
+colnames(watershed_money_mean) <- c("watershed_name", "money_funded_mean")
+colnames(watershed_money_median) <- c("watershed_name", "money_funded_median")
+colnames(pcsrf_funds_sum) <- c("watershed_name", "money_funded_sum_pcsrf")
+colnames(pcsrf_funds_mean) <- c("watershed_name", "money_funded_mean_pcsrf")
+colnames(pcsrf_funds_median) <- c("watershed_name", "money_funded_median_pcsrf")
+colnames(state_funds_sum) <- c("watershed_name", "money_funded_sum_state")
+colnames(state_funds_mean) <- c("watershed_name", "money_funded_mean_state")
+colnames(state_funds_median) <- c("watershed_name", "money_funded_median_state")
+colnames(others_funds_sum) <- c("watershed_name", "money_funded_sum_others")
+
+# divide by 1000 to make numbers more managable
+watershed_money_sum <- watershed_money_sum %>% 
+  mutate(divided_1000_sum = round(money_funded_sum/1000,2))
+watershed_money_mean <- watershed_money_mean %>% 
+  mutate(divided_1000_mean = round(money_funded_mean/1000,2))
+watershed_money_median <- watershed_money_median %>% 
+  mutate(divided_1000_median = round(money_funded_median/1000,2))
+pcsrf_funds_sum <- pcsrf_funds_sum %>% 
+  mutate(divided_1000_pcsrf_sum = round(money_funded_sum_pcsrf/1000,2))
+pcsrf_funds_mean <- pcsrf_funds_mean %>% 
+  mutate(divided_1000_pcsrf_mean = round(money_funded_mean_pcsrf/1000,2))
+pcsrf_funds_median <- pcsrf_funds_median %>% 
+  mutate(divided_1000_pcsrf_median = round(money_funded_median_pcsrf/1000,2))
+state_funds_sum <- state_funds_sum %>% 
+  mutate(divided_1000_state_sum = round(money_funded_sum_state/1000,2))
+state_funds_mean <- state_funds_mean %>% 
+  mutate(divided_1000_state_mean = round(money_funded_mean_state/1000,2))
+state_funds_median<- state_funds_median %>% 
+  mutate(divided_1000_state_median = round(money_funded_median_state/1000,2))
+others_funds_sum <- others_funds_sum %>% 
+  mutate(divided_1000_others_sum = round(money_funded_sum_others/1000,2))
+
+
+mymerge <- function(x, y)
+merge(x, y, by=c("watershed_name"), all=TRUE)
+
+combined_funds_df <- Reduce(mymerge, list(watershed_money_sum, watershed_money_mean, watershed_money_median, pcsrf_funds_sum, pcsrf_funds_mean, pcsrf_funds_median,state_funds_sum, state_funds_mean, state_funds_median, others_funds_sum))
+
+```
+
+
+
+
+
+# ```{r}
+# #time to visualize everything
+# watershed_money_sum <- watershed_money_sum %>% 
+#   mutate(divided_1000 = round(money_funded_sum/1000,2))
+# 
+# histo_sum_total <- ggplot(data = watershed_money_sum) + 
+#   geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
+#   )+ 
+#   coord_flip() +
+#   labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Sum of Combined Funding in Willamette Basin by Subwatershed")
+# 
+# histo_sum_total
+# ```
+# ```{r}
+# #Graphing mean of money spent on a Histogram
+# #divide by 1000 to make numbers easier for graph
+# watershed_money_mean <- watershed_money_mean %>% 
+#   mutate(divided_1000 = round(money_funded_mean/1000,2))
+# 
+# histo_mean_total <- ggplot(data = watershed_money_mean) + 
+#   geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
+#   )+ 
+#   coord_flip() +
+#   labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Mean of Combined Funding in Willamette Basin by Subwatershed")
+# 
+# histo_mean_total
+# ```
+# ```{r}
+# #Graphing median of money spent on a Histogram
+# #divide by 1000 to make numbers easier for graph
+# watershed_money_median <- watershed_money_median %>% 
+#   mutate(divided_1000 = round(money_funded_median/1000))
+# 
+# histo_median_total <- ggplot(data = watershed_money_median) + 
+#   geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
+#   )+ 
+#   coord_flip() +
+#   labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Median of Combined Funding in Willamette Basin by Subwatershed")
+# 
+# histo_median_total
+# ```
+# 
+# ```{r}
+# #visualize PCSRF money
+# pcsrf_sum <- pcsrf_funds_sum %>% 
+#   mutate(divided_1000 = round(money_funded_sum/1000,2))
+# 
+# histo_sum_pcrf <- ggplot(data = pcsrf_sum) + 
+#   geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
+#   )+ 
+#   coord_flip() +
+#   labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Sum of PCSRF Funding in Willamette Basin by Subwatershed")
+# 
+# histo_sum_pcrf
+# ```
+# ```{r}
+# #Graphing mean of money spent on a Histogram
+# #divide by 1000 to make numbers easier for graph
+# pcsrf_mean <- pcsrf_funds_mean %>% 
+#   mutate(divided_1000 = round(money_funded_mean/1000,2))
+# 
+# histo_mean_pcsrf <- ggplot(data = watershed_money_mean) + 
+#   geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
+#   )+ 
+#   coord_flip() +
+#   labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Mean of PCSRF Funding in the Willamette Basin by Subwatershed")
+# 
+# histo_mean_pcsrf
+# ```
+# ```{r}
+# #Graphing median of money spent on a Histogram
+# #divide by 1000 to make numbers easier for graph
+# pcsrf_median <- pcsrf_funds_median %>% 
+#   mutate(divided_1000 = round(money_funded_median/1000))
+# 
+# histo_median_pcsrf <- ggplot(data = watershed_money_median) + 
+#   geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
+#   )+ 
+#   coord_flip() +
+#   labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Median of PCSRF Funding in the Willamette Basin by Subwatershed")
+# 
+# histo_median_pcsrf
+# ```
+
+
+
+
+
+
