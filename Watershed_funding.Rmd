@@ -1,11 +1,16 @@
 ---
-title: "Watershed_Funding"
+title: "Willamette Basin Subwatershed Funding"
 author: "Teague Tran"
 date: "8/5/2021"
-output: html_document
+output: 
+  html_document:
+    code_folding: hide
 ---
-
 ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message = FALSE,  warning = FALSE}
 library(tidyverse)
 library(ggplot2)
 library(janitor)
@@ -15,13 +20,15 @@ library(kableExtra)
 library(lubridate)
 library(tsibble)
 library(patchwork)
+library(reshape2)
+library(hrbrthemes)
 
 watershed_funding <- read_xls(here("Projects_by_subwatersheds.xls")) %>% 
   clean_names()
 
 ```
 
-```{r}
+```{r, message =  FALSE, warning = FALSE}
 #putting all of the types of funding into data frame to perform summary statistics
 rows_funding <- watershed_funding %>% 
   select(pcsrf_funds, state_funds, other_funds, in_kind_volunteer_funds, in_kind_donated_labor_funds, in_kind_other_funds)
@@ -30,8 +37,7 @@ watershed_funding_withdates <-  watershed_funding %>%
   mutate(start_date = lubridate::ymd(start)) %>% 
   mutate(year_start = year(start_date)) %>% 
   mutate(total_money = rowSums(rows_funding))
-```
-```{r}
+
 #sum of total funding by subwatershed
 watershed_money_sum <- watershed_funding_withdates %>% 
   group_by(name_2) %>% 
@@ -117,103 +123,112 @@ state_funds_median<- state_funds_median %>%
 others_funds_sum <- others_funds_sum %>% 
   mutate(divided_1000_others_sum = round(money_funded_sum_others/1000,2))
 
-
 mymerge <- function(x, y)
 merge(x, y, by=c("watershed_name"), all=TRUE)
 
 combined_funds_df <- Reduce(mymerge, list(watershed_money_sum, watershed_money_mean, watershed_money_median, pcsrf_funds_sum, pcsrf_funds_mean, pcsrf_funds_median,state_funds_sum, state_funds_mean, state_funds_median, others_funds_sum))
 
+
 ```
 
+```{r, message= FALSE, warning= FALSE}
+#Organize data frame into usable columns to pivot
+showing_sums <- combined_funds_df %>% 
+  select(watershed_name, divided_1000_sum,divided_1000_pcsrf_sum, divided_1000_state_sum, divided_1000_others_sum) 
 
+#PIVOT!!! PIVVVOOOOOTTTT
+pivot_sums <- pivot_longer(showing_sums, c(divided_1000_sum,divided_1000_pcsrf_sum, divided_1000_state_sum, divided_1000_others_sum))
 
+#make more coherent column names
+colnames(pivot_sums) <- c("watershed_name","funding_type", "money_funded_sum")
+#Change all funding types to more presentable names
+pivot_sums$funding_type <-
+  sub( "divided_1000_pcsrf_sum", "PCSRF Funds", pivot_sums$funding_type)
 
+pivot_sums$funding_type <-
+  sub( "divided_1000_sum", "Total Funds", pivot_sums$funding_type)
 
-# ```{r}
-# #time to visualize everything
-# watershed_money_sum <- watershed_money_sum %>% 
-#   mutate(divided_1000 = round(money_funded_sum/1000,2))
-# 
-# histo_sum_total <- ggplot(data = watershed_money_sum) + 
-#   geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
-#   )+ 
-#   coord_flip() +
-#   labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Sum of Combined Funding in Willamette Basin by Subwatershed")
-# 
-# histo_sum_total
-# ```
-# ```{r}
-# #Graphing mean of money spent on a Histogram
-# #divide by 1000 to make numbers easier for graph
-# watershed_money_mean <- watershed_money_mean %>% 
-#   mutate(divided_1000 = round(money_funded_mean/1000,2))
-# 
-# histo_mean_total <- ggplot(data = watershed_money_mean) + 
-#   geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
-#   )+ 
-#   coord_flip() +
-#   labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Mean of Combined Funding in Willamette Basin by Subwatershed")
-# 
-# histo_mean_total
-# ```
-# ```{r}
-# #Graphing median of money spent on a Histogram
-# #divide by 1000 to make numbers easier for graph
-# watershed_money_median <- watershed_money_median %>% 
-#   mutate(divided_1000 = round(money_funded_median/1000))
-# 
-# histo_median_total <- ggplot(data = watershed_money_median) + 
-#   geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
-#   )+ 
-#   coord_flip() +
-#   labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Median of Combined Funding in Willamette Basin by Subwatershed")
-# 
-# histo_median_total
-# ```
-# 
-# ```{r}
-# #visualize PCSRF money
-# pcsrf_sum <- pcsrf_funds_sum %>% 
-#   mutate(divided_1000 = round(money_funded_sum/1000,2))
-# 
-# histo_sum_pcrf <- ggplot(data = pcsrf_sum) + 
-#   geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
-#   )+ 
-#   coord_flip() +
-#   labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Sum of PCSRF Funding in Willamette Basin by Subwatershed")
-# 
-# histo_sum_pcrf
-# ```
-# ```{r}
-# #Graphing mean of money spent on a Histogram
-# #divide by 1000 to make numbers easier for graph
-# pcsrf_mean <- pcsrf_funds_mean %>% 
-#   mutate(divided_1000 = round(money_funded_mean/1000,2))
-# 
-# histo_mean_pcsrf <- ggplot(data = watershed_money_mean) + 
-#   geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
-#   )+ 
-#   coord_flip() +
-#   labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Mean of PCSRF Funding in the Willamette Basin by Subwatershed")
-# 
-# histo_mean_pcsrf
-# ```
-# ```{r}
-# #Graphing median of money spent on a Histogram
-# #divide by 1000 to make numbers easier for graph
-# pcsrf_median <- pcsrf_funds_median %>% 
-#   mutate(divided_1000 = round(money_funded_median/1000))
-# 
-# histo_median_pcsrf <- ggplot(data = watershed_money_median) + 
-#   geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
-#   )+ 
-#   coord_flip() +
-#   labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Median of PCSRF Funding in the Willamette Basin by Subwatershed")
-# 
-# histo_median_pcsrf
-# ```
+pivot_sums$funding_type <-
+  sub( "divided_1000_state_sum", "State Funds", pivot_sums$funding_type)
 
+pivot_sums$funding_type <-
+  sub( "divided_1000_others_sum", "Other Funds", pivot_sums$funding_type)
 
+ggplot(data = pivot_sums)+
+  geom_col(aes(x = reorder(watershed_name, money_funded_sum), y = money_funded_sum, fill = funding_type)) +
+  theme(legend.position = "none", axis.text = element_text(size = 8.75))+
+  coord_flip() +
+  facet_wrap(~funding_type) +
+  labs(x = "Subwatershed", y = "Amount of Funding ($1000)", title = "Sum of Fundings") +
+  scale_fill_manual(values = c("coral1", "dodgerblue3", "firebrick3", "darkorchid4"))
+
+```
+
+```{r,message=FALSE,warning = FALSE}
+#Organize data frame into usable columns to pivot
+showing_means <- combined_funds_df %>% 
+  select(watershed_name, divided_1000_mean,divided_1000_pcsrf_mean, divided_1000_state_mean) 
+
+#PIVOT!!! PIVVVOOOOOTTTT
+pivot_means <- pivot_longer(showing_means, c(divided_1000_mean,divided_1000_pcsrf_mean, divided_1000_state_mean))
+#make more coherent column names
+
+colnames(pivot_means) <- c("watershed_name","funding_type", "money_funded_mean")
+#Change all funding types to more presentable names
+pivot_means$funding_type <-
+  sub( "divided_1000_pcsrf_mean", "PCSRF Funds", pivot_means$funding_type)
+
+pivot_means$funding_type <-
+  sub( "divided_1000_mean", "Total Funds", pivot_means$funding_type)
+
+pivot_means$funding_type <-
+  sub( "divided_1000_state_mean", "State Funds", pivot_means$funding_type)
+
+#get watersheds into the order as sums
+pivot_means$watershed_name <-factor(pivot_means$watershed_name, ordered = T, levels =  c("South Santiam", "North Santiam", "Upper Calapooia River", "Middle Fork Willamette", "Molalla-Pudding", "Clackamas", "Coast Fork Willamette", "Tualatin", "Middle Willamette", "Yamhill", "Lower Willamette", "Mckenzie", "Upper Willamette"))
+
+#Graph it!
+ggplot(data = pivot_means)+
+  geom_col(aes(x = watershed_name, y = money_funded_mean, fill = funding_type)) +
+  theme(legend.position = "none", axis.text = element_text(size = 8.75))+
+  coord_flip() +
+  facet_wrap(~funding_type) +
+  labs(x = "Subwatershed", y = "Amount of Funding ($1000)", title = "Mean of Fundings") +
+  scale_fill_manual(values = c( "dodgerblue3", "firebrick3", "darkorchid4"))
+```
+
+```{r, message = FALSE, warning = FALSE}
+#Organize data frame into usable columns to pivot
+showing_medians <- combined_funds_df %>% 
+  select(watershed_name, divided_1000_median,divided_1000_pcsrf_median, divided_1000_state_median) 
+
+#PIVOT!!! PIVVVOOOOOTTTT
+pivot_medians <- pivot_longer(showing_medians, c(divided_1000_median,divided_1000_pcsrf_median, divided_1000_state_median))
+#make more coherent column names
+
+colnames(pivot_medians) <- c("watershed_name","funding_type", "money_funded_mean")
+#Change all funding types to more presentable names
+pivot_medians$funding_type <-
+  sub( "divided_1000_pcsrf_median", "PCSRF Funds", pivot_medians$funding_type)
+
+pivot_medians$funding_type <-
+  sub( "divided_1000_median", "Total Funds", pivot_medians$funding_type)
+
+pivot_medians$funding_type <-
+  sub( "divided_1000_state_median", "State Funds", pivot_medians$funding_type)
+
+#get watersheds into the order as sums
+pivot_medians$watershed_name <-factor(pivot_medians$watershed_name, ordered = T, levels =  c("South Santiam", "North Santiam", "Upper Calapooia River", "Middle Fork Willamette", "Molalla-Pudding", "Clackamas", "Coast Fork Willamette", "Tualatin", "Middle Willamette", "Yamhill", "Lower Willamette", "Mckenzie", "Upper Willamette"))
+
+#Graph it!
+ggplot(data = pivot_medians)+
+  geom_col(aes(x = watershed_name, y = money_funded_mean, fill = funding_type)) +
+  theme(legend.position = "none", axis.text = element_text(size = 8.75))+
+  coord_flip() +
+  facet_wrap(~funding_type) +
+  labs(x = "Subwatershed", y = "Amount of Funding ($1000)", title = "Median of Fundings") +
+  scale_fill_manual(values = c( "dodgerblue3", "firebrick3", "darkorchid4"))
+```
 
 
 

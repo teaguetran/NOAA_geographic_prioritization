@@ -1,0 +1,136 @@
+```{r}
+#start graphing using combined_funds_df
+histo_sum <- ggplot(data = combined_funds_df) + 
+  geom_col(aes(x = reorder(watershed_name, divided_1000_sum), y = divided_1000_sum)+
+  geom_col(aes(x = reorder(watershed_name, divided_1000_pcsrf_sum), y = divided_1000_pcsrf_sum)
+  ))+ 
+  geom_col(aes(x = reorder(watershed_name, divided_1000_state_sum), y = divided_1000_state_sum))+
+    geom_col(aes(x = reorder(watershed_name, divided_1000_others_sum), y = divided_1000_others_sum))+
+  coord_flip() +
+  labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Sum Funded by NOAA for Restoration Projects by Subwatershed")
+
+histo_sum
+
+#start graphing using combined_funds_df
+histo_sums <- ggplot(data = combined_funds_df) + 
+  geom_col(aes(x = reorder(watershed_name, divided_1000_sum), y = divided_1000_sum)+
+  geom_col(aes(x = reorder(watershed_name, divided_1000_sum), y = divided_1000_pcsrf_sum)
+  )) +
+  geom_col(aes(x = divided_1000_state_sum), y = divided_1000_state_sum)+
+    geom_col(aes(x = divided_1000_others_sum, y = divided_1000_others_sum))+
+  coord_flip() +
+  labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Sum Funded by NOAA for Restoration Projects by Subwatershed")
+
+
+histo_sums <- ggplot(data = combined_funds_df) + 
+  geom_col(aes(x = reorder(watershed_name, divided_1000_sum), y = divided_1000_sum)) + 
+  coord_flip() +
+  labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Sum Funded by NOAA for Restoration Projects by Subwatershed")
+
+histo_sums
+
+data_ggp <- data.frame(x =combined_funds_df_sums$watershed_name,                            # Reshape data frame
+                       y = c(combined_funds_df_sums$divided_1000_sum, combined_funds_df_sums$divided_1000_pcsrf_sum, combined_funds_df_sums$divided_1000_state_sum),
+                       group = c(rep("y1", nrow(combined_funds_df_sums)),
+                                 rep("y2", nrow(combined_funds_df_sums)),
+                                 rep("y3", nrow(combined_funds_df_sums))))
+```
+
+
+
+
+
+
+
+
+
+
+```{r}
+ #time to visualize everything
+ watershed_money_sum <- watershed_money_sum %>%
+   mutate(divided_1000 = round(money_funded_sum/1000,2))
+
+histo_sum_total <- ggplot(data = watershed_money_sum) +
+  geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
+  )+
+  coord_flip() +
+  labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Sum of Combined Funding in Willamette Basin by Subwatershed")
+
+histo_sum_total
+```
+```{r}
+#Graphing mean of money spent on a Histogram
+#divide by 1000 to make numbers easier for graph
+watershed_money_mean <- watershed_money_mean %>%
+  mutate(divided_1000 = round(money_funded_mean/1000,2))
+
+histo_mean_total <- ggplot(data = watershed_money_mean) +
+  geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
+  )+
+  coord_flip() +
+  labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Mean of Combined Funding in Willamette Basin by Subwatershed")
+
+histo_mean_total
+```
+```{r}
+#Graphing median of money spent on a Histogram
+#divide by 1000 to make numbers easier for graph
+watershed_money_median <- watershed_money_median %>%
+  mutate(divided_1000 = round(money_funded_median/1000))
+
+histo_median_total <- ggplot(data = watershed_money_median) +
+  geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
+  )+
+  coord_flip() +
+  labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Median of Combined Funding in Willamette Basin by Subwatershed")
+
+histo_median_total
+```
+
+ ```{r}
+# #visualize PCSRF money
+# pcsrf_sum <- pcsrf_funds_sum %>%
+#   mutate(divided_1000 = round(money_funded_sum/1000,2))
+#
+# histo_sum_pcrf <- ggplot(data = pcsrf_sum) +
+#   geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
+#   )+
+#   coord_flip() +
+#   labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Sum of PCSRF Funding in Willamette Basin by Subwatershed")
+#
+# histo_sum_pcrf
+```
+```{r}
+#Graphing mean of money spent on a Histogram
+#divide by 1000 to make numbers easier for graph
+pcsrf_mean <- pcsrf_funds_mean %>%
+  mutate(divided_1000 = round(money_funded_mean/1000,2))
+
+histo_mean_pcsrf <- ggplot(data = watershed_money_mean) +
+  geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
+  )+
+  coord_flip() +
+  labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Mean of PCSRF Funding in the Willamette Basin by Subwatershed")
+
+histo_mean_pcsrf
+```
+ ```{r}
+ #Graphing median of money spent on a Histogram
+ #divide by 1000 to make numbers easier for graph
+ pcsrf_median <- pcsrf_funds_median %>%
+   mutate(divided_1000 = round(money_funded_median/1000))
+
+ histo_median_pcsrf <- ggplot(data = watershed_money_median) +
+   geom_col(aes(reorder(watershed_name, divided_1000), divided_1000)
+   )+
+   coord_flip() +
+   labs(x = "Subwatershed Name", y = "Funding for Restoration ($1000)", title = "Median of PCSRF Funding in the Willamette Basin by Subwatershed")
+
+histo_median_pcsrf
+
+
+
+
+
+
+
