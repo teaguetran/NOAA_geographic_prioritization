@@ -28,6 +28,52 @@ watershed_funding <- read_xls(here("Projects_by_subwatersheds.xls")) %>%
 
 ```
 
+```{r, message =FALSE, warning =FALSE}
+#number of projects by subwatershed
+project_counts_watershed <- watershed_funding %>% 
+  group_by(name_2) %>% 
+  count()
+#visualize the counts
+ggplot(data = project_counts_watershed) + 
+  geom_col(aes(x = reorder(name_2,n), y = n), fill ="navy") +
+  coord_flip() 
+#seperate from # of projects funded by each because there's only funding information on ~4,000 of them
+```
+```{r, message=FALSE, warning=FALSE}
+project_counts_by_funder <- watershed_funding %>% 
+  select(name_2, pcsrf_funds, state_funds, other_funds) %>% 
+  filter(pcsrf_funds > 0 | state_funds > 0 | other_funds > 0)
+
+pivot_funder_counts <- pivot_longer(project_counts_by_funder, c(pcsrf_funds, state_funds, other_funds))
+
+colnames(pivot_funder_counts) <- c("watershed_name", "funder", "amount_funded")
+
+pivot_funder_counts <-  pivot_funder_counts %>% 
+  filter(amount_funded > 0)
+
+funder_counts <- pivot_funder_counts %>% 
+  group_by(watershed_name,funder) %>% 
+  count()
+
+funder_counts$funder <-
+  sub( "pcsrf_funds", "PCSRF Funding", funder_counts$funder)
+
+funder_counts$funder <-
+  sub( "state_funds", "State Funding", funder_counts$funder)
+
+funder_counts$funder <-
+  sub( "other_funds", "Other Funding", funder_counts$funder)
+
+ggplot(data = funder_counts) + 
+  geom_col(data = funder_counts, aes(x = watershed_name, y = n, fill = funder)) +
+  facet_wrap(~funder)+
+  coord_flip() +
+  labs(title = "Number of Projects Funded Organized by Funder (n = 318)", x = "Subwatershed", y = "Count of Projects Funded") +
+  theme(legend.position = "none")
+```
+
+
+
 ```{r, message =  FALSE, warning = FALSE}
 #putting all of the types of funding into data frame to perform summary statistics
 rows_funding <- watershed_funding %>% 
@@ -228,6 +274,19 @@ ggplot(data = pivot_medians)+
   facet_wrap(~funding_type) +
   labs(x = "Subwatershed", y = "Amount of Funding ($1000)", title = "Median of Fundings") +
   scale_fill_manual(values = c( "dodgerblue3", "firebrick3", "darkorchid4"))
+```
+
+```{r}
+#time for type of funding 
+watershed_funding
+#putting all of the types of funding into data frame to perform summary statistics
+rows_funding <- watershed_funding %>% 
+  select(pcsrf_funds, state_funds, other_funds, in_kind_volunteer_funds, in_kind_donated_labor_funds, in_kind_other_funds)
+#get dates for the start of funding
+watershed_funding_withdates <-  watershed_funding %>% 
+  mutate(start_date = lubridate::ymd(start)) %>% 
+  mutate(year_start = year(start_date)) %>% 
+  mutate(total_money = rowSums(rows_funding))
 ```
 
 
