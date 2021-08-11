@@ -36,43 +36,48 @@ project_counts_watershed <- watershed_funding %>%
 #visualize the counts
 ggplot(data = project_counts_watershed) + 
   geom_col(aes(x = reorder(name_2,n), y = n), fill ="navy") +
-  coord_flip() 
+  coord_flip() +
+  labs(title = "Number of Projects by Subwatershed", x = "Subwatershed Name", y = "Number of Projects")
 #seperate from # of projects funded by each because there's only funding information on ~4,000 of them
 ```
+
+**Figure 1. Willamette Basin restoration projects from 1990 through 2012** are shown here. Many restoration projects fall within the Middle Fork Willamette and McKenzie subbasin (2165 and 1906 projects respectively). Meanwhile, The Tualatin and Middle Willamette have received the least projects within the time frame (255 and 254 projects respectively). It should be noted that 3,244 out of 10,930 had starting date information, so there could be some projects depicted here that were started outside of the time frame. 
 ```{r, message=FALSE, warning=FALSE}
+#get the counts of projects that have been funded
 project_counts_by_funder <- watershed_funding %>% 
   select(name_2, pcsrf_funds, state_funds, other_funds) %>% 
-  filter(pcsrf_funds > 0 | state_funds > 0 | other_funds > 0)
+  filter(pcsrf_funds > 0 | state_funds > 0 | other_funds > 0) #filter out only the projects that have at least 1 source of funding
 
-pivot_funder_counts <- pivot_longer(project_counts_by_funder, c(pcsrf_funds, state_funds, other_funds))
-
+pivot_funder_counts <- pivot_longer(project_counts_by_funder, c(pcsrf_funds, state_funds, other_funds)) #pivot to make it easier to graph
+#change column names
 colnames(pivot_funder_counts) <- c("watershed_name", "funder", "amount_funded")
-
+#take out any project/funder combos with 0 funding
 pivot_funder_counts <-  pivot_funder_counts %>% 
   filter(amount_funded > 0)
-
+#group by watershed and funder
 funder_counts <- pivot_funder_counts %>% 
   group_by(watershed_name,funder) %>% 
   count()
+#replace names to make it prettier on graph
+funder_counts$funder <-
+  sub( "pcsrf_funds", "PCSRF Funds", funder_counts$funder)
 
 funder_counts$funder <-
-  sub( "pcsrf_funds", "PCSRF Funding", funder_counts$funder)
+  sub( "state_funds", "State Funds", funder_counts$funder)
 
 funder_counts$funder <-
-  sub( "state_funds", "State Funding", funder_counts$funder)
-
-funder_counts$funder <-
-  sub( "other_funds", "Other Funding", funder_counts$funder)
-
+  sub( "other_funds", "Other Funds", funder_counts$funder)
+#GRAPH THAT BAD BOY/GIRL/PERSON/THING
 ggplot(data = funder_counts) + 
   geom_col(data = funder_counts, aes(x = watershed_name, y = n, fill = funder)) +
   facet_wrap(~funder)+
   coord_flip() +
   labs(title = "Number of Projects Funded Organized by Funder (n = 318)", x = "Subwatershed", y = "Count of Projects Funded") +
-  theme(legend.position = "none")
+  theme(legend.position = "none") + 
+  scale_fill_manual(values = c("coral1", "dodgerblue3", "firebrick3"))
 ```
 
-
+**Figure 2. The number of projects organized by funders** show that both NOAA and the State contribute to projects that fall within Upper Willamette and McKenzie. Meanwhile, NOAA has provided no funds to North Santiam and State provided no funds to the North Santiam. It is critical to note that 4,402 projects out of 10,930had funding information, while approximately 318 had either PCSRF, State or other funds. 
 
 ```{r, message =  FALSE, warning = FALSE}
 #putting all of the types of funding into data frame to perform summary statistics
@@ -83,6 +88,10 @@ watershed_funding_withdates <-  watershed_funding %>%
   mutate(start_date = lubridate::ymd(start)) %>% 
   mutate(year_start = year(start_date)) %>% 
   mutate(total_money = rowSums(rows_funding))
+
+#how many with actual dates
+actual_dates  <- watershed_funding_withdates %>% 
+  filter (!is.na(start_date))
 
 #sum of total funding by subwatershed
 watershed_money_sum <- watershed_funding_withdates %>% 
@@ -205,11 +214,12 @@ ggplot(data = pivot_sums)+
   theme(legend.position = "none", axis.text = element_text(size = 8.75))+
   coord_flip() +
   facet_wrap(~funding_type) +
-  labs(x = "Subwatershed", y = "Amount of Funding ($1000)", title = "Sum of Fundings") +
+  labs(x = "Subwatershed", y = "Amount of Funding ($1000)", title = "Sum of Fundings for Each Subwatershed") +
   scale_fill_manual(values = c("coral1", "dodgerblue3", "firebrick3", "darkorchid4"))
 
 ```
 
+**Figure 3. Projects that were funded by PCSRF, State or other funds** show that PCSRF funds primarily focus on Upper Willamette (~$2.6 million) and state funds focused on McKenzie (~$2.8 million), leading them to be the most well-funded. Meanwhile, North Santiam and South Santiam are the least funded (~$50 thousand and $46 thousand respectively).
 ```{r,message=FALSE,warning = FALSE}
 #Organize data frame into usable columns to pivot
 showing_means <- combined_funds_df %>% 
@@ -239,10 +249,11 @@ ggplot(data = pivot_means)+
   theme(legend.position = "none", axis.text = element_text(size = 8.75))+
   coord_flip() +
   facet_wrap(~funding_type) +
-  labs(x = "Subwatershed", y = "Amount of Funding ($1000)", title = "Mean of Fundings") +
+  labs(x = "Subwatershed", y = "Amount of Funding ($1000)", title = "Mean of Fundings for Each Subwatershed") +
   scale_fill_manual(values = c( "dodgerblue3", "firebrick3", "darkorchid4"))
 ```
 
+**Figure 4. Mean funding for each subwatershed** show that Tualatin receives the highest PCSRF funding per project. However, this could be due to the low amount of projects funded by PCSRF there. Meanwhile, both  the state and total funding shows that the McKenzie receives the most per project. 
 ```{r, message = FALSE, warning = FALSE}
 #Organize data frame into usable columns to pivot
 showing_medians <- combined_funds_df %>% 
@@ -272,22 +283,96 @@ ggplot(data = pivot_medians)+
   theme(legend.position = "none", axis.text = element_text(size = 8.75))+
   coord_flip() +
   facet_wrap(~funding_type) +
-  labs(x = "Subwatershed", y = "Amount of Funding ($1000)", title = "Median of Fundings") +
+  labs(x = "Subwatershed", y = "Amount of Funding ($1000)", title = "Median of Fundings for Each Subwatershed") +
   scale_fill_manual(values = c( "dodgerblue3", "firebrick3", "darkorchid4"))
 ```
 
-```{r}
-#time for type of funding 
-watershed_funding
-#putting all of the types of funding into data frame to perform summary statistics
-rows_funding <- watershed_funding %>% 
-  select(pcsrf_funds, state_funds, other_funds, in_kind_volunteer_funds, in_kind_donated_labor_funds, in_kind_other_funds)
-#get dates for the start of funding
-watershed_funding_withdates <-  watershed_funding %>% 
-  mutate(start_date = lubridate::ymd(start)) %>% 
-  mutate(year_start = year(start_date)) %>% 
-  mutate(total_money = rowSums(rows_funding))
+**Figure 4. Median funding for each subwatershed** show that Tualatin receives the highest median PCSRF funding per project. However, this could be due to the low amount of projects funded by PCSRF there. Meanwhile, both the state and total funding shows that the McKenzie receives the highest median funding.
+```{r, include = FALSE}
+# #let's export all the stuff for arcgis!! 
+# write.csv(Your DataFrame,"Path to export the DataFrame\\File Name.csv", row.names = FALSE)
+# 
+# write.csv(watershed_money_mean, "C:\\Users\\ichos\\OneDrive\\Desktop\\ESM244\\ESM204\\NOAA_geographic_prioritization\\watershed_money_mean_whole.csv", row.names = FALSE)
+# 
+# write.csv(watershed_money_median, "C:\\Users\\ichos\\OneDrive\\Desktop\\ESM244\\ESM204\\NOAA_geographic_prioritization\\watershed_money_median_whole.csv", row.names = FALSE)
+# 
+# write.csv(watershed_money_sum, "C:\\Users\\ichos\\OneDrive\\Desktop\\ESM244\\ESM204\\NOAA_geographic_prioritization\\watershed_money_sum_whole.csv", row.names = FALSE)
+# 
+# write.csv(pcsrf_funds_mean, "C:\\Users\\ichos\\OneDrive\\Desktop\\ESM244\\ESM204\\NOAA_geographic_prioritization\\pcsrf_funds_mean_whole.csv", row.names = FALSE)
+# 
+# write.csv(pcsrf_funds_median, "C:\\Users\\ichos\\OneDrive\\Desktop\\ESM244\\ESM204\\NOAA_geographic_prioritization\\pcsrf_funds_median_whole.csv", row.names = FALSE)
+# 
+# write.csv(pcsrf_funds_sum, "C:\\Users\\ichos\\OneDrive\\Desktop\\ESM244\\ESM204\\NOAA_geographic_prioritization\\pcsrf_funds_sum_whole.csv", row.names = FALSE)
+# 
+# write.csv(state_funds_mean, "C:\\Users\\ichos\\OneDrive\\Desktop\\ESM244\\ESM204\\NOAA_geographic_prioritization\\state_funds_mean_whole.csv", row.names = FALSE)
+# 
+# write.csv(state_funds_median, "C:\\Users\\ichos\\OneDrive\\Desktop\\ESM244\\ESM204\\NOAA_geographic_prioritization\\state_funds_median_whole.csv", row.names = FALSE)
+# 
+# write.csv(state_funds_sum, "C:\\Users\\ichos\\OneDrive\\Desktop\\ESM244\\ESM204\\NOAA_geographic_prioritization\\state_funds_sum_whole.csv", row.names = FALSE)
+# 
+# write.csv(others_funds_sum, "C:\\Users\\ichos\\OneDrive\\Desktop\\ESM244\\ESM204\\NOAA_geographic_prioritization\\other_funds_sum_whole.csv", row.names = FALSE)
+# 
+# write.csv(combined_funds_df, "C:\\Users\\ichos\\OneDrive\\Desktop\\ESM244\\ESM204\\NOAA_geographic_prioritization\\combined_funds_whole.csv", row.names = FALSE)
 ```
+
+
+
+```{r}
+# #time for type of funding 
+# restoration_types <- watershed_funding %>% 
+#   select(type_s_23, pcsrf_funds, state_funds, other_funds,name_2) %>% 
+#   filter(pcsrf_funds > 0 | state_funds > 0 | other_funds > 0) 
+# 
+# restoration_types_pivot <-pivot_longer(restoration_types, c(pcsrf_funds, state_funds, other_funds)) #pivot to make it easier to graph
+# 
+# #change column names
+# colnames(restoration_types_pivot) <- c("restoration_type", "watershed_name", "funder", "amount_funded")
+# 
+# #replace names to make it prettier on graph
+# restoration_types_pivot$funder <-
+#   sub( "pcsrf_funds", "PCSRF Funds", restoration_types_pivot$funder)
+# 
+# restoration_types_pivot$funder <-
+#   sub( "state_funds", "State Funds", restoration_types_pivot$funder)
+# 
+# restoration_types_pivot$funder <-
+#   sub( "other_funds", "Other Funds", restoration_types_pivot$funder)
+# 
+# restoration_types_grouped <- restoration_types_pivot %>% 
+#   group_by(restoration_type, watershed_name, funder) %>% 
+#   summarise(round(sum(amount_funded), 2)) 
+# 
+# 
+# colnames(restoration_types_grouped) <- c("restoration_type", "watershed_name", "funder", "amount_funded")
+# 
+# restoration_types_grouped <- restoration_types_grouped %>% 
+#   mutate(amount_funded_1000 = round(amount_funded/1000,2))
+# 
+# unique(restoration_types_grouped$restoration_type)
+# 
+# restoration_types_grouped$restoration_type <-
+#   sub( "Fish Passage Improvement", "FPI", restoration_types_grouped$restoration_type)
+# restoration_types_grouped$restoration_type <-
+#   sub( "Instream Habitat", "IH", restoration_types_grouped$restoration_type)
+# restoration_types_grouped$restoration_type <-
+#   sub( "Riparian Habitat", "RH", restoration_types_grouped$restoration_type)
+# restoration_types_grouped$restoration_type <-
+#   sub( "Instream Flow", "IF", restoration_types_grouped$restoration_type)
+# restoration_types_grouped$restoration_type <-
+#   sub( "Upland Habitat And Sediment", "UHS", restoration_types_grouped$restoration_type)
+# 
+# 
+# ggplot(data = restoration_types_grouped) +
+#   geom_col(aes(x = restoration_type, y = amount_funded_1000, fill = funder)) + 
+#   facet_wrap(~watershed_name) +
+#   coord_flip() + 
+#   theme(legend.position = "none") +
+#   scale_fill_manual(values = c("coral1", "dodgerblue3", "firebrick3"))
+```
+
+
+
+
 
 
 
